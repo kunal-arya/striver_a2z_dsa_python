@@ -22,7 +22,7 @@ print(all_divisor(12))
 def all_divisor_op(n):
     divisor = set()
     
-    for i in range(1,int(n * 0.5) + 1):
+    for i in range(1,int(n ** 0.5) + 1):
         if n % i == 0:
             divisor.add(i)
             divisor.add(n // i)
