@@ -17,6 +17,44 @@
 # 🛠 Brute Force Approach
 # ========================
 
+# Visual Explanation 📊
+#
+# Problem: Make max number of elements equal using at most `k` increments
+# Approach: For each arr[i], try to make previous elements equal to it
+#
+# Sorted Array ➝ [a0, a1, ..., ai-1, ai, ..., an]
+#                           ↑ target
+#        <---- Looping Backwards ----
+#
+# For each j in [i-1 ... 0]:
+#     How much to add to arr[j] to make it == arr[i]?
+#         operation_needed = arr[i] - arr[j]
+#
+#     Keep track of total_operations:
+#         If total_operations + operation_needed <= k:
+#             ✅ Make arr[j] == arr[i]
+#             count += 1
+#             total_operations += operation_needed
+#         Else:
+#             ❌ Stop (not enough k left)
+#
+# Goal: Find max `count` and corresponding number (arr[i])
+#
+# Example:
+#   arr = [1, 2, 4]
+#   k = 5
+#
+#   Sorted: [1, 2, 4]
+#
+#   Try to make all == 4:
+#     4 - 2 = 2
+#     4 - 1 = 3
+#     Total = 5 (✅)
+#     → count = 3 → best so far
+#
+# Time Complexity: O(N^2)
+# Why Brute Force? Trying every possibility greedily with early stop
+
 def high_low_freq(arr, k):
     # Step 1: Sort the Array (smallest to largest)
     arr.sort()
@@ -50,6 +88,35 @@ def high_low_freq(arr, k):
 
     return max_freq, max_freq_num
 
+# Visual Dry Run 🧠
+#
+# Input: arr = [1, 2, 4], k = 5
+# After sort ➝ [1, 2, 4]
+#
+# Iteration 1:
+#   i = 0 → target = 1
+#   [1, 2, 4]
+#    ↑
+#   No elements before → count = 1
+#
+# Iteration 2:
+#   i = 1 → target = 2
+#   [1, 2, 4]
+#    ↑   ↑
+#    j   i
+#   2 - 1 = 1 → ✅ total = 1 ≤ k → count = 2
+#
+# Iteration 3:
+#   i = 2 → target = 4
+#   [1, 2, 4]
+#    ↑   ↑   ↑
+#    j   j   i
+#   4 - 2 = 2 → ✅ total = 2
+#   4 - 1 = 3 → ✅ total = 5 (within k) → count = 3
+#
+# Final Result:
+# ➝ max_freq = 3, number = 4
+
 # Example Usage (Brute Force)
 arr = [1, 2, 4]
 k = 5
@@ -61,11 +128,55 @@ print("Brute Force Result:", high_low_freq(arr, k))
 # 🏎 Optimized Approach (Sliding Window)
 # ========================
 
+# LINK FOR VIDEO: https://www.youtube.com/watch?v=vgBrQ0NM5vE
+
 # Intuition Behind Optimization:
 # - Instead of checking every element individually (O(n^2)),
 # - Use a sliding window to include as many elements as possible while total operations <= k.
 
 # Time Complexity: O(n log n) because of sorting + O(n) pass.
+
+# Visual Explanation 📊
+#
+# Problem: Make max number of elements equal using at most `k` increments
+# Optimized Approach: Sliding Window + Prefix Sum Logic
+#
+# Idea: Instead of checking each arr[i] by looping back,
+#       Use a window [l ... r] and check:
+#
+#   Can we make all elements in window equal to arr[r] using ≤ k ops?
+#
+# Condition:
+#   arr[r] * window_size ≤ total_sum + k
+#
+# Why? 
+#   To make all elements equal to arr[r], total operations needed:
+#       (arr[r] - arr[l]) + (arr[r] - arr[l+1]) + ... + (arr[r] - arr[r])
+#     = arr[r] * window_size - sum(window elements)
+#
+# If this ≤ k, we can make all elements equal to arr[r]
+#
+# If not → shrink window from the left
+#
+# Sliding Window:
+#   - r expands window to include more elements
+#   - l shrinks window when total operations > k
+#
+# Track max window size (r - l + 1) → gives max frequency possible
+#
+# Example:
+#   arr = [1, 2, 4], k = 5
+#   Sorted: [1, 2, 4]
+#
+#   Try making elements equal to 4:
+#     total = 1 + 2 + 4 = 7
+#     4 * 3 = 12 → 12 > 7 + 5 → ❌ too costly → shrink left
+#     Now: [2, 4] → total = 6 → 4 * 2 = 8 ≤ 6 + 5 → ✅
+#
+# Final Answer ➝ max_freq = 2
+#
+# Time Complexity: O(N log N) for sorting + O(N) for window
+# Much faster than brute-force O(N^2)
 
 def high_freq_op(arr, k):
     # Step 1: Sort the Array
@@ -92,6 +203,48 @@ def high_freq_op(arr, k):
         r += 1
 
     return max_freq
+
+# Visual Dry Run 🔍 (Sliding Window Approach)
+#
+# Input: arr = [1, 2, 4], k = 5
+# After sort ➝ [1, 2, 4]
+#
+# Initialize:
+#   l = 0, r = 0, total = 0, max_freq = 0
+#
+# Step-by-step Sliding Window:
+#
+# r = 0 → total = 1
+# [1, 2, 4]
+#  ↑
+#  l,r
+#   Check: 1 * 1 = 1 ≤ total + k (1 + 5) ✅
+#   → max_freq = 1
+#
+# r = 1 → total = 1 + 2 = 3
+# [1, 2, 4]
+#  ↑  ↑
+#  l  r
+#   Check: 2 * 2 = 4 ≤ 3 + 5 ✅
+#   → max_freq = 2
+#
+# r = 2 → total = 3 + 4 = 7
+# [1, 2, 4]
+#  ↑     ↑
+#  l     r
+#   Check: 4 * 3 = 12 > 7 + 5 → ❌ shrink window
+#     ➝ total -= arr[l] → total = 6, l = 1
+#
+# [1, 2, 4]
+#     ↑  ↑
+#     l  r
+#   Check: 4 * 2 = 8 ≤ 6 + 5 ✅
+#   → max_freq = 2 (unchanged)
+#
+# r = 3 → end
+#
+# Final Answer:
+# ➝ max_freq = 2
 
 # Example Usage (Optimized)
 arr = [1, 2, 4]
