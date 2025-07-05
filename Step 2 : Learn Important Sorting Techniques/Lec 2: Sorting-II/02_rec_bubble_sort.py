@@ -1,29 +1,70 @@
+# ================================
+# 🧠 Recursive Bubble Sort Algorithm (with Full Explanation)
+# ================================
+
+# ✅ Time Complexity:
+# - Best Case: O(n)           → Already sorted array (no swaps in first pass)
+# - Average/Worst Case: O(n²) → For unsorted input
+
+# ✅ Space Complexity: O(n)
+# - Due to recursion stack (each function call adds a frame)
+
+# -------------------------------------------------------------
+# 🔧 Intuition:
+# -------------------------------------------------------------
+# - Like regular Bubble Sort, we push the largest element to the end in each pass
+# - But instead of using a loop to run multiple passes, we use recursion
+# - Each recursive call works on a smaller subarray: size n-1, n-2, ..., 1
+#
+# Key idea: Do one full pass per recursive call, then recurse on remaining unsorted part.
+
+# -------------------------------------------------------------
+# 🧮 Dry Run:
+# -------------------------------------------------------------
+# arr = [64, 34, 25, 12]
+# Pass 1: Compare all pairs → largest moves to the end
+#   [64, 34] → swap → [34, 64]
+#   [64, 25] → swap → [34, 25, 64]
+#   [64, 12] → swap → [34, 25, 12, 64]
+# Pass 2: [34, 25, 12]
+#   [34, 25] → swap → [25, 34]
+#   [34, 12] → swap → [25, 12, 34]
+# Pass 3: [25, 12]
+#   [25, 12] → swap → [12, 25]
+# Pass 4: [12] → base case hit
+
+# Final Result: [12, 25, 34, 64]
+
+# -------------------------------------------------------------
+# 🔁 Recursive Bubble Sort Function
+# -------------------------------------------------------------
+
 def recursive_bubble_sort(arr, n):
     """
     Recursive Bubble Sort:
-    - Compare adjacent elements and swap if needed, like the iterative version,
-    but using recursion instead of a loop.
-    
-    Time Complexity:
-    - Best Case: O(n) (when the array is already sorted)
-    - Average Case: O(n²)
-    - Worst Case: O(n²)
-    
-    Space Complexity: O(n) (because of recursion stack)
+    - Compares adjacent elements and swaps if needed.
+    - Uses recursion instead of outer loop.
     """
-    # Base case: if the length is 1, array is sorted
+
+    # 🛑 Base case: array of size 1 is already sorted
     if n == 1:
         return arr
 
-    # One pass of bubble sort: after this pass, the largest element is in the correct place
-    for i in range(n-1):
-        if arr[i] > arr[i+1]:
-            arr[i], arr[i+1] = arr[i+1], arr[i]  # Swap if elements are out of order
-    
-    # Recursively call for the next smaller subarray (excluding the last sorted element)
-    return recursive_bubble_sort(arr, n-1)
+    # 🌀 One complete pass of Bubble Sort:
+    # After this pass, the largest element moves to the end
+    for i in range(n - 1):
+        if arr[i] > arr[i + 1]:
+            arr[i], arr[i + 1] = arr[i + 1], arr[i]  # Swap if out of order
 
+    # 🔁 Recur on the remaining unsorted subarray (excluding last sorted element)
+    return recursive_bubble_sort(arr, n - 1)
 
-# Example usage
+# -------------------------------------------------------------
+# 🚀 Driver Code & Final Output
+# -------------------------------------------------------------
+
 arr = [64, 34, 25, 12, 22, 11, 90]
 print("Recursive Bubble Sort:", recursive_bubble_sort(arr, len(arr)))
+
+# Output:
+# Recursive Bubble Sort: [11, 12, 22, 25, 34, 64, 90]
