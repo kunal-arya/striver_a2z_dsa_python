@@ -194,6 +194,9 @@ def high_freq_op(arr, k):
 
         # Condition Check:
         # - arr[r] * window_size > total + k means we need to shrink the window
+        # basically if every element in the window become arr[r] 
+        # means total of that would be => arr[r] * (r - l + 1)
+        # In Reality Total is => total + k ( how much more we are allowed to add )
         while arr[r] * (r - l + 1) > total + k:
             total -= arr[l]
             l += 1
