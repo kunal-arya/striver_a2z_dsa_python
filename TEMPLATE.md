@@ -1,6 +1,4 @@
-DSA Problem Solution Template
-============================
-
+"""
 Problem: [Write the problem statement here]
 Platform: [LeetCode/HackerRank/GeeksforGeeks/etc.]
 Difficulty: [Easy/Medium/Hard]
