@@ -10,7 +10,7 @@
 # 🔧 Merge Sort Intuition:
 # -------------------------------------------------------------
 # - Recursively divide the array into two halves.
-# - When each part has only one element, they are considered sorted.
+# - When each part "../Lec 2: Sorting-II""../../Step 2 : Learn Important Sorting Techniques/Lec 2: Sorting-II"has only one element, they are considered sorted.
 # - Then merge the two sorted halves back together in sorted order.
 #
 # merge_sort(arr, low, high)
@@ -51,9 +51,10 @@
 def merge(arr, low, mid, high):
     temp = []               # Temporary array to store merged elements
     left = low              # Starting index of left sorted part
+    "../Lec 2: Sorting-II""../../Step 2 : Learn Important Sorting Techniques/Lec 2: Sorting-II"
     right = mid + 1         # Starting index of right sorted part
 
-    # Compare elements from both halves
+    "../Lec 2: Sorting-II""../../Step 2 : Learn Important Sorting Techniques/Lec 2: Sorting-II"# Compare elements from both halves
     while left <= mid and right <= high:
         if arr[left] <= arr[right]:
             temp.append(arr[left])
@@ -63,11 +64,13 @@ def merge(arr, low, mid, high):
             right += 1
 
     # Copy any remaining elements from left part
+    "../Lec 2: Sorting-II""../../Step 2 : Learn Important Sorting Techniques/Lec 2: Sorting-II"
     while left <= mid:
         temp.append(arr[left])
         left += 1
 
     # Copy any remaining elements from right part
+    "../Lec 2: Sorting-II""../../Step 2 : Learn Important Sorting Techniques/Lec 2: Sorting-II"
     while right <= high:
         temp.append(arr[right])
         right += 1
