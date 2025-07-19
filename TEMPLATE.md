@@ -1,8 +1,9 @@
 """
-Problem: [Write the problem statement here]
+Problem: [Write the problem statement here in details with example and all]
 Platform: [LeetCode/HackerRank/GeeksforGeeks/etc.]
 Difficulty: [Easy/Medium/Hard]
 Topics: [Array, String, Dynamic Programming, etc.]
+LINK: [Problem Link]
 """
 
 # ==============================================================================
@@ -216,7 +217,7 @@ def compare_approaches():
     approaches = ["brute", "better", "optimal"]
     
     for approach in approaches:
-        print(f"\n{approach.upper()} APPROACH:")
+        print(f"{approach.upper()} APPROACH:")
         
         # Measure time
         import time
@@ -261,7 +262,7 @@ def test_solution():
     input1 = [1, 2, 3, 4, 5]
     expected1 = [1, 2, 3]  # Replace with expected output
     
-    print("\nTest 1 - Basic example:")
+    print("Test 1 - Basic example:")
     for approach in ["brute", "better", "optimal"]:
         result1 = solve_problem(input1, approach)
         assert result1 == expected1, f"Test 1 {approach} failed: expected {expected1}, got {result1}"
@@ -271,7 +272,7 @@ def test_solution():
     input2 = []
     expected2 = []
     
-    print("\nTest 2 - Empty input:")
+    print("Test 2 - Empty input:")
     for approach in ["brute", "better", "optimal"]:
         result2 = solve_problem(input2, approach)
         assert result2 == expected2, f"Test 2 {approach} failed: expected {expected2}, got {result2}"
@@ -281,14 +282,14 @@ def test_solution():
     input3 = [42]
     expected3 = [42]
     
-    print("\nTest 3 - Single element:")
+    print("Test 3 - Single element:")
     for approach in ["brute", "better", "optimal"]:
         result3 = solve_problem(input3, approach)
         assert result3 == expected3, f"Test 3 {approach} failed: expected {expected3}, got {result3}"
         print(f"✓ {approach.capitalize()} approach passed")
     
     # TEST CASE 4: Large input performance test
-    print("\nTest 4 - Performance comparison:")
+    print("Test 4 - Performance comparison:")
     large_input = list(range(1000))  # Adjust size based on problem
     
     import time
@@ -298,7 +299,7 @@ def test_solution():
         end_time = time.time()
         print(f"{approach.capitalize()} approach: {end_time - start_time:.4f} seconds")
     
-    print("\n🎉 All tests passed!")
+    print("🎉 All tests passed!")
 
 def test_correctness():
     """
@@ -316,7 +317,7 @@ def test_correctness():
     print("=" * 30)
     
     for i, test_input in enumerate(test_cases):
-        print(f"\nTest case {i+1}: {test_input}")
+        print(f"Test case {i+1}: {test_input}")
         
         # Get results from all approaches
         brute_result = solve_problem(test_input, "brute")
@@ -329,7 +330,7 @@ def test_correctness():
         
         print(f"✓ All approaches agree: {brute_result}")
     
-    print("\n✅ All approaches produce identical results!")
+    print("✅ All approaches produce identical results!")
 
 # ==============================================================================
 # COMPLEXITY ANALYSIS
@@ -428,7 +429,7 @@ if __name__ == "__main__":
     # Example usage with default optimal approach
     sample_input = [1, 2, 3, 4, 5]
     result = solve_problem(sample_input)  # Uses optimal by default
-    print(f"\nFinal Result (Optimal): {result}")
+    print(f"Final Result (Optimal): {result}")
     
     # Example: Test specific approach
     brute_result = solve_problem(sample_input, "brute")
@@ -436,7 +437,7 @@ if __name__ == "__main__":
     
     # PERFORMANCE TESTING: Uncomment to test with very large inputs
     """
-    print("\nPERFORMANCE TEST WITH LARGE INPUT:")
+    print("PERFORMANCE TEST WITH LARGE INPUT:")
     large_input = list(range(10000))
     
     import time
