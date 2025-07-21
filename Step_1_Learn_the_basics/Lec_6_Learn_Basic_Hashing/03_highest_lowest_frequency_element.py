@@ -255,6 +255,11 @@ k = 5
 print("Optimized Result:", high_freq_op(arr, k))
 # Output should be 3
 
+arr = [1, 1, 1, 2, 2, 4]
+k = 2
+print("Optimized Result 2:", high_freq_op(arr, k))
+# Output should be 4
+
 
 # ========================
 # 🔥 Quick Summary

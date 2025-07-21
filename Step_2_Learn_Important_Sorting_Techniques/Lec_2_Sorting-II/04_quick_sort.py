@@ -1,181 +1,104 @@
-# ========================
-# 🧠 Quick Sort Algorithm (with Full Explanation)
-# ========================
-
-# ✅ Time Complexity:
-# - Best Case: O(N log N)     → Balanced partitions
-# - Average Case: O(N log N)
-# - Worst Case: O(N^2)        → Skewed partitions (e.g., already sorted)
-
-# ✅ Space Complexity:
-# - Average: O(log N) due to recursion stack
-# - Worst: O(N) in case of skewed recursion tree
-
-# ✅ In-Place Sorting: Yes
-# ✅ Stable Sort: No
-
-# -------------------------------------------------------------
-# 🔧 Quick Sort Intuition:
-# -------------------------------------------------------------
-# - "Divide and Conquer" strategy.
-# - Pick a pivot element (we use the first element, arr[low]).
-# - Partition the array: Move all elements smaller than the pivot to its left,
-#   and all elements larger than the pivot to its right. The pivot is now in its
-#   final sorted position.
-# - Recursively apply the same logic to the left and right subarrays.
-
-# qs(arr, low, high)
-#   → partition the array with qs_pivot()
-#   → get the pivot index (correct place of pivot)
-#   → recursively apply qs(arr, low, pivot - 1)   // Sort left part
-#                         qs(arr, pivot + 1, high)  // Sort right part
-
-# -------------------------------------------------------------
-# 🌳 Recursion Tree & Visual Dry Run
-# -------------------------------------------------------------
-# Initial Call: qs([64, 34, 25, 12, 22, 11, 90], 0, 6)
+# =================================================
+# Quick Sort Algorithm
+# =================================================
 #
-#                                          qs([64, 34, 25, 12, 22, 11, 90], 0, 6)
-#                                          Pivot: 64
-#                                          Partitioned: [11, 34, 25, 12, 22, |64|, 90] -> pivot_idx=5
-#                                                     /                             \
-#                                                    /                               \
-#                        qs([11, 34, 25, 12, 22], 0, 4)                           qs([90], 6, 6)
-#                        Pivot: 11                                                 (Base Case: low>=high, return)
-#                        Partitioned: [|11|, 34, 25, 12, 22] -> pivot_idx=0
-#                                     /                \
-#                                    /                  \
-#                qs([], 0, -1)                     qs([34, 25, 12, 22], 1, 4)
-#                (Base Case)                         Pivot: 34
-#                                                    Partitioned: [11, |22, 25, 12|, 34, 64, 90] -> pivot_idx=4
-#                                                                 /                   \
-#                                                                /                     \
-#                                             qs([22, 25, 12], 1, 3)                qs([], 5, 4)
-#                                             Pivot: 22                               (Base Case)
-#                                             Partitioned: [11, |12|, 22, |25|, 34, 64, 90] -> pivot_idx=2
-#                                                         /         \
-#                                                        /           \
-#                                           qs([12], 1, 1)        qs([25], 3, 3)
-#                                           (Base Case)             (Base Case)
+# Time Complexity:
+# - Best & Average Case: O(N log N)
+# - Worst Case: O(N^2)
+#
+# Space Complexity: O(log N) for the recursion stack.
+#
+# -------------------------------------------------
+# Core Idea: Divide and Conquer
+# -------------------------------------------------
+# 1. Pick a 'pivot' element.
+# 2. Partition: Rearrange the array so that all elements smaller than the pivot
+#    are on its left, and all elements greater are on its right.
+# 3. Recurse: Apply quick sort to the left and right subarrays.
+#
+# -------------------------------------------------
+# Recursion Tree & Visual Dry Run
+# -------------------------------------------------
+# Initial Array: [64, 34, 25, 12, 22, 11, 90]
+#
+#                                  qs(arr, 0, 6) pivot=64
+#                                        |
+#                       [11, 34, 25, 12, 22] |64| [90]
+#                       /                      \
+#                 qs(arr, 0, 4) pivot=11      qs(arr, 6, 6) -> base case
+#                      |
+#             |11| [34, 25, 12, 22]
+#             /          \
+# qs(arr, 0,-1) -> base   qs(arr, 1, 4) pivot=34
+#                            |
+#                   [22, 25, 12] |34|
+#                   /              \
+#           qs(arr, 1, 3) pivot=22  qs(arr, 5, 4) -> base
+#                 |
+#           [12] |22| [25]
+#           /      \
+# qs(arr, 1,1)    qs(arr, 3,3) -> base cases
 #
 # Final Sorted Array: [11, 12, 22, 25, 34, 64, 90]
+#
+# -------------------------------------------------
 
-# -------------------------------------------------------------
-# 🔁 qs_pivot(arr, low, high): The Partitioning Logic
-# -------------------------------------------------------------
-# - Select the first element (arr[low]) as the pivot.
-# - Use two pointers, i and j, to find the correct position for the pivot.
-def qs_pivot(arr, low, high):
+def partition(arr, low, high):
+    """
+    This function takes the first element as a pivot, places the pivot element
+    at its correct position in the sorted array, and places all smaller
+    elements to the left of the pivot and all greater elements to the right.
+    """
     pivot = arr[low]
-    i, j = low, high
-
-    # --- Visual Start ---
-    # arr: [...]
-    # pivot = arr[low]
-    #  i →            ← j
+    i = low
+    j = high
 
     while i < j:
-        # Move pointer 'i' to the right until we find an element > pivot
-        # The condition `i <= high - 1` prevents `i` from going out of bounds.
+        # Find an element on the left side that is > pivot
         while i <= high and arr[i] <= pivot:
             i += 1
-        
-        # Move pointer 'j' to the left until we find an element <= pivot
-        # The condition `j >= low + 1` prevents `j` from going out of bounds.
+
+        # Find an element on the right side that is < pivot
         while j >= low and arr[j] > pivot:
             j -= 1
-            
-        # If the pointers 'i' and 'j' haven't crossed...
+
+        # If i and j haven't crossed, swap them
         if i < j:
-            # ...it means we've found an element on the left that's too big (at i)
-            # and an element on the right that's too small (at j). Swap them.
-            # Visual: arr[..., big_val_at_i, ..., small_val_at_j, ...] -> arr[..., small_val_at_j, ..., big_val_at_i, ...]
             arr[i], arr[j] = arr[j], arr[i]
 
-    # The loop ends when j <= i. At this point, j is the final sorted position for the pivot.
-    # Swap the pivot (which is still at arr[low]) with the element at arr[j].
-    # Visual: [pivot, ..., arr[j], ...] -> [arr[j], ..., pivot, ...]
+    # Why swap pivot with arr[j]?
+    # When the `while i < j` loop ends, `j` is the final position where the
+    # pivot belongs. This is because the `j` pointer has stopped at the last
+    # element that is smaller than or equal to the pivot. All elements to the
+    # left of `j` are guaranteed to be smaller than or equal to the pivot.
+    # Therefore, swapping the pivot (arr[low]) with arr[j] places the pivot
+    # in its correct sorted position.
     arr[low], arr[j] = arr[j], arr[low]
-    
-    # Return the index where the pivot is now located.
+
+    # We return `j` to the main quick_sort function so it knows the split point.
+    # The next recursive calls will sort the subarrays to the left (low to j-1)
+    # and right (j+1 to high) of this newly placed pivot.
     return j
 
-# -------------------------------------------------------------
-# 🔁 qs(arr, low, high): The Recursive Sorting Logic
-# -------------------------------------------------------------
-# - Base case: if low >= high, the subarray has 0 or 1 elements, so it's already sorted.
-# - Recursive step: Partition the array and then recursively sort the left and right parts.
-def qs(arr, low, high, depth=0):
-    # This is a visual aid to see the recursion depth and the current state.
-    indent = "  " * depth
-    print(f"{indent}qs(arr, low={low}, high={high}) on subarray: {arr[low:high+1]}")
-    
+def quick_sort(arr, low, high):
+    """
+    The main function that implements QuickSort.
+    - arr: The array to be sorted.
+    - low: Starting index.
+    - high: Ending index.
+    """
     if low < high:
-        # 1. Partition the array. After this call, arr[pivot_idx] is in its final sorted place.
-        print(f"{indent}  - Partitioning around pivot: {arr[low]}")
-        pivot_idx = qs_pivot(arr, low, high)
-        print(f"{indent}  - Array after partition (pivot {arr[pivot_idx]} is now at index {pivot_idx}): {arr}")
+        # pi is the partitioning index, arr[pi] is now at the right place.
+        pi = partition(arr, low, high)
 
-        # 2. Recursively sort the left subarray (elements smaller than the pivot).
-        print(f"{indent}  -> [L] Recursing on left part: indices {low} to {pivot_idx - 1}")
-        qs(arr, low, pivot_idx - 1, depth + 1)
-        
-        # 3. Recursively sort the right subarray (elements larger than the pivot).
-        print(f"{indent}  -> [R] Recursing on right part: indices {pivot_idx + 1} to {high}")
-        qs(arr, pivot_idx + 1, high, depth + 1)
-    else:
-        # Base Case: The subarray is sorted (or empty), so we return.
-        print(f"{indent}  - Base Case reached (low >= high). Returning.")
+        # Separately sort elements before partition and after partition
+        quick_sort(arr, low, pi - 1)
+        quick_sort(arr, pi + 1, high)
 
 
-# -------------------------------------------------------------
-# 🚀 Driver Code & Final Output
-# -------------------------------------------------------------
-arr = [64, 34, 25, 12, 22, 11, 90]
-print("Initial Array:", arr)
-print("-" * 30)
-print("Visual Dry Run:")
-qs(arr, 0, len(arr) - 1)
-print("-" * 30)
-print("Quick Sort Final Result:", arr)
-
-# =========================================================================
-# 💻 EXPECTED OUTPUT OF THE VISUAL TRACE
-# =========================================================================
-#
-# 📞 Call: qs(low=0, high=6) on [64] [34] [25] [12] [22] [11] [90]
-#    - 🔄 Partitioning around pivot [64]...
-#    - ✨ Partitioned. Pivot [64] is now at index 5.
-#      State: [11] [34] [25] [12] [22] [64] [90]
-#    ├─ Left Call...
-#     📞 Call: qs(low=0, high=4) on [11] [34] [25] [12] [22] 64 90
-#        - 🔄 Partitioning around pivot [11]...
-#        - ✨ Partitioned. Pivot [11] is now at index 0.
-#          State: [11] [34] [25] [12] [22] 64 90
-#        ├─ Left Call...
-#         📞 Call: qs(low=0, high=-1) on 11 34 25 12 22 64 90
-#            - ✅ Base Case (low >= high), returning.
-#        └─ Right Call...
-#         📞 Call: qs(low=1, high=4) on 11 [34] [25] [12] [22] 64 90
-#            - 🔄 Partitioning around pivot [34]...
-#            - ✨ Partitioned. Pivot [34] is now at index 4.
-#              State: 11 [22] [25] [12] [34] 64 90
-#            ├─ Left Call...
-#             📞 Call: qs(low=1, high=3) on 11 [22] [25] [12] 34 64 90
-#                - 🔄 Partitioning around pivot [22]...
-#                - ✨ Partitioned. Pivot [22] is now at index 2.
-#                  State: 11 [12] [22] [25] 34 64 90
-#                ├─ Left Call...
-#                 📞 Call: qs(low=1, high=1) on 11 [12] 22 25 34 64 90
-#                    - ✅ Base Case (low >= high), returning.
-#                └─ Right Call...
-#                 📞 Call: qs(low=3, high=3) on 11 12 22 [25] 34 64 90
-#                    - ✅ Base Case (low >= high), returning.
-#            └─ Right Call...
-#             📞 Call: qs(low=5, high=4) on 11 22 25 12 34 64 90
-#                - ✅ Base Case (low >= high), returning.
-#    └─ Right Call...
-#     📞 Call: qs(low=6, high=6) on 11 34 25 12 22 64 [90]
-#        - ✅ Base Case (low >= high), returning.
-#
-# Final Sorted Array: [11, 12, 22, 25, 34, 64, 90]
+# --- Driver Code ---
+if __name__ == "__main__":
+    arr = [64, 34, 25, 12, 22, 11, 90]
+    print("Original array:", arr)
+    quick_sort(arr, 0, len(arr) - 1)
+    print("Sorted array:", arr)
