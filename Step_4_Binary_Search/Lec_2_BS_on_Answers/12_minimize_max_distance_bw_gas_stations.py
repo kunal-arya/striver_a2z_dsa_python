@@ -46,17 +46,31 @@ def minimizeMaxGasBrute(arr: List[int],k: int) -> int:
     Approach:
     1. Create an array `howMany` of size `n-1` 
         to store the number of new stations placed in each initial gap. Initialize with zeros.
+
     2. Loop `k` times to place each of the `k` gas stations.
+
     3. In each iteration of the loop:
+
        a. Find the largest current section. Iterate through all `n-1` sections.
+
        b. The length of a section `i` is `(stations[i+1] - stations[i]) / (howMany[i] + 1)`.
+       # Analogy: Cutting a Rope
+            # The distance between two stations (`diff`) is a rope of a certain length.
+            # The number of new stations placed in that gap (`howMany[i]`) is the number of "cuts" you make.
+            # If you make `k` cuts in a rope, you get `k + 1` equal pieces.
+            # So, the length of each new, smaller piece is the original length divided by the number of pieces.
+            # Length of one piece = `diff / (howMany[i] + 1)`
+
        c. Keep track of the section with the maximum length and its index.
+
     4. After finding the largest section, place a gas station in it 
         by incrementing `howMany` at that index.
+
     5. After the loop finishes, calculate the final maximum distance by 
         checking all resulting section lengths.
 
     Time Complexity: O(k * n) - For each of the `k` stations, we iterate through `n` sections to find the max.
+
     Space Complexity: O(n) - To store the `howMany` array.
     """
     n = len(arr)
@@ -97,7 +111,11 @@ def minMaxGasBetter(arr: List[int], k: int) -> int:
     BETTER APPROACH - Using a Max Priority Queue to optimize finding the largest gap.
 
     Intuition:
-    The brute-force approach is slow because it repeatedly scans all sections to find the largest one. We can significantly speed this up by using a data structure that provides the largest section efficiently. A max-priority queue is perfect for this.
+    The brute-force approach is slow because it repeatedly scans all sections 
+    to find the largest one. 
+    We can significantly speed this up by using a data structure that provides 
+    the largest section efficiently. 
+    A max-priority queue is perfect for this.
 
     Approach:
     1. Create an array `howMany` of size `n-1` to store station counts.
@@ -158,9 +176,22 @@ def numOfGasStationReq(distance, arr):
     cnt = 0
     for i in range(len(arr) - 1):
         gap = arr[i+1] - arr[i]
-        # if gap is 10 and distance is 3, we need floor(10/3) = 3 stations.
-        # if gap is 9 and distance is 3, we need floor(9/3) = 3 stations, but we only need 2.
-        # The number of new stations needed is ceil(gap/distance) - 1
+        # DERIVATION of `math.ceil(gap / distance) - 1`:
+        #
+        # 1. `gap / distance`:
+        #    Calculates how many segments of length `distance` fit into the `gap`.
+        #    e.g., gap=20, distance=6 -> 20/6 = 3.33 segments.
+        #
+        # 2. `math.ceil(...)`:
+        #    We must cover the whole gap, so we need to round up.
+        #    e.g., ceil(3.33) = 4. We need 4 total segments to ensure none are > 6.
+        #    If we used 3 segments, each would be 20/3 = 6.67, which is too long.
+        #
+        # 3. `- 1`:
+        #    To create N segments, you need to place N-1 new stations.
+        #    e.g., S --- (N1) --- (N2) --- (N3) --- E  (4 segments, 3 new stations)
+        #
+        #    So, the number of new stations is `ceil(gap / distance) - 1`.
         if gap > distance:
              cnt += math.ceil(gap / distance) - 1
     return cnt
@@ -197,10 +228,10 @@ def minMaxGasOp(arr: List[int], k: int) -> int:
     high = max(arr[i + 1] - arr[i] for i in range(n - 1))
 
     # Binary search for the answer
-    while high - low > 1e-2: # Precision for competitive programming
+    while high - low > 1e-6: # Precision for competitive programming
         mid = (low + high) / 2.0
         if mid == 0: # Avoid division by zero
-            low = 1e-2
+            low = 1e-6
             continue
 
         stations_needed = numOfGasStationReq(mid, arr)
